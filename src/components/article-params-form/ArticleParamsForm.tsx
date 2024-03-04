@@ -10,6 +10,7 @@ import { Select } from '../select';
 import { OptionType, fontFamilyOptions, ArticleStateType, fontSizeOptions, fontColors, backgroundColors, contentWidthArr } from 'src/constants/articleProps';
 import { Separator } from '../separator';
 import { Text } from '../text/Text';
+import { useClose } from './hook/useClose';
 
 type ArticleParamsFormProps = {
 	fontFamily: (select: OptionType) => void,
@@ -25,31 +26,17 @@ type ArticleParamsFormProps = {
 export const ArticleParamsForm = (props: ArticleParamsFormProps) => {
 	const ref = useRef<HTMLFormElement | null>(null)
 	const [open, setOpen] = useState(false);
-	const elem = ref.current;
+	// const elem = ref.current;
+
+	useClose({
+		isOpen: open,
+		onClose: () => setOpen(false),
+		rootRef: ref
+	})
 
 	const toggleForm = useCallback(() => {
 		open === false ? setOpen(true) : setOpen(false);
 	},[open])
-
-	useEffect(() => {
-		const hideSideBar = (event: MouseEvent) => {
-			if (open && event.target instanceof Node && !elem?.contains(event.target)) {
-				setOpen(false);
-			}
-		}
-		document.addEventListener('mousedown', hideSideBar);
-		return () => document.removeEventListener('mousedown', hideSideBar)
-	}, [open])
-
-	useEffect(() => {
-		const hideSideBarByEsc = (event: KeyboardEvent) => {
-			if (event.key === 'Escape' && open) {
-				setOpen(false);
-			}
-		}
-		document.addEventListener('keydown', hideSideBarByEsc);
-		return () => document.removeEventListener('keydown', hideSideBarByEsc);
-	}, [open])
 
 	return (
 		<>
